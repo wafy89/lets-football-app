@@ -17,4 +17,17 @@ model Match {
   matchSize         Int
   location          String
   date              DateTime @default(now())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id           String   @id @default(uuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  username     String   @unique
+  passwordHash String
+  matches      Match[]
+  position     String
+  name         String
 }

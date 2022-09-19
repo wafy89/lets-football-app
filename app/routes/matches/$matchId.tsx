@@ -1,13 +1,34 @@
+import { Link, useLoaderData } from '@remix-run/react';
+import { db } from '~/utils/db.server';
 
-import { useParams } from "@remix-run/react"
-function MatchDetails() {
-    const {matchId} = useParams()
-    return (
-        <>
-         <div className="page-header"> <h1> Match Details :</h1> </div>
-        </>
-       
-    )
+export async function loader({ params }: any) {
+	const match = await db.match.findUnique({
+		where: { id: params.matchId },
+	});
+
+	if (!match) throw new Error('match not found');
+
+	return {
+		match,
+	};
 }
 
-export default MatchDetails
+export default function MatchDetails() {
+	const { match } = useLoaderData();
+	const getAvailablePlaces = () => match.matchSize - match.playersRegistered;
+
+	return (
+		<>
+			<div className="page-header">
+				<h1> Match Details : {match.title}</h1>
+				<Link
+					to="/matches"
+					className="btn btn-reverse"
+				>
+					Back
+				</Link>
+			</div>
+			<p>available : {getAvailablePlaces()}</p>
+		</>
+	);
+}

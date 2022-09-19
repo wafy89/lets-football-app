@@ -1,22 +1,25 @@
 import { Link } from '@remix-run/react';
 import { redirect, Request } from '@remix-run/node';
 import { db } from '~/utils/db.server';
+import { requireUserId } from '~/utils/session.server';
 
 export const action = async ({ request }: { request: Request }) => {
+	const userId = await requireUserId(request);
 	const formData = await request.formData();
 	const formDate = formData.get('date');
 	const match = {
+		userId,
 		title: formData.get('title'),
 		playersRegistered: 1,
 		matchSize: Number(formData.get('matchSize')),
 		location: formData.get('location'),
 		date: typeof formDate === 'string' ? new Date(formDate) : undefined,
 	};
-	//  sbmiut to db
-	console.log(match);
-	const matches = await db.match.create({ data: match });
 
-	return redirect('/matches');
+	//  sbmiut to db
+	const newMatch = await db.match.create({ data: match });
+
+	return redirect(`/matches/${newMatch.id}`);
 };
 function NewMatch() {
 	return (
