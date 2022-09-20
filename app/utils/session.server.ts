@@ -8,8 +8,12 @@ import { db } from "./db.server";
 type LoginForm = {
   username: string;
   password: string;
-  name: string;
-  position:string
+};
+type RegisterForm = {
+  username: string;
+  password: string;
+  name:string;
+  position: string
 };
 
 export async function login({
@@ -76,6 +80,8 @@ const storage = createCookieSessionStorage({
 export async function getUserId(request: Request) {
     const session = await getUserSession(request);
     const userId = session.get("userId");
+    console.log('getUserId',{userId})
+
     if (!userId || typeof userId !== "string") return null;
     return userId;
 }
@@ -84,12 +90,16 @@ export async function requireUserId(
     request: Request,
     redirectTo: string = new URL(request.url).pathname
   ) {
+    
+
     const session = await getUserSession(request);
-    const userId = session.get("userId");
+    const userId = await session.get("userId");
+    console.log('requireUserId',{userId})
     if (!userId || typeof userId !== "string") {
       const searchParams = new URLSearchParams([
         ["redirectTo", redirectTo],
       ]);
+      console.log(searchParams)
       throw redirect(`/login?${searchParams}`);
     }
     return userId;
@@ -105,7 +115,6 @@ export async function getUser(request: Request) {
     try {
       const user = await db.user.findUnique({
         where: { id: userId },
-        select: { id: true, username: true, name:true },
       });
       return user;
     } catch {
@@ -129,7 +138,7 @@ export async function getUser(request: Request) {
     password,
     name,
     position
-  }: LoginForm) {
+  }: RegisterForm) {
     console.log(
         "bla bla",
         username,

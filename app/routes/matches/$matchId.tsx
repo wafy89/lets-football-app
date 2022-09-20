@@ -4,6 +4,13 @@ import { db } from '~/utils/db.server';
 export async function loader({ params }: any) {
 	const match = await db.match.findUnique({
 		where: { id: params.matchId },
+		include: {
+			userMatch: {
+				include: {
+					user: true,
+				},
+			},
+		},
 	});
 
 	if (!match) throw new Error('match not found');
@@ -29,6 +36,7 @@ export default function MatchDetails() {
 				</Link>
 			</div>
 			<p>available : {getAvailablePlaces()}</p>
+			<p>{JSON.stringify(match)}</p>
 		</>
 	);
 }

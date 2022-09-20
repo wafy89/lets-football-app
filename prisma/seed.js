@@ -3,6 +3,14 @@ const {PrismaClient} = require('@prisma/client')
 const db = new PrismaClient()
 
 async function seed(){
+
+    //clear database
+    await db.match.deleteMany()
+    await db.user.deleteMany()
+    await db.userMatch.deleteMany()
+
+
+    // create user data
     const admin = await db.user.create({
         data: {
             username: "admin@fea.de",
@@ -12,11 +20,21 @@ async function seed(){
             position: "cm"
         },
       });
-    await Promise.all(
-        getMatches().map(match=>{
-            return db.match.create({data:{ userId:admin.id,...match}})
+
+    
+    //create matches data 
+    const matches =getMatches().map(async match=> await db.match.create({data:{...match, creatorUserId: admin.id}}) ) 
+    
+
+    // create relationData
+    matches.map(async match=>{
+        await db.userMatch.create({
+            data:{
+                matchId:(await match).id,
+                userId:admin.id
+            }
         })
-    )
+    })
 }
 
 function getMatches() {
@@ -25,7 +43,7 @@ return [
         {
             //id: '1',
             title: 'match 1',
-            playersRegistered: 5,
+            playerRegistered: 1,
             matchSize: 22,
             location: 'linkelStr.11 04159 Leipzig',
             date : new Date()
@@ -33,8 +51,8 @@ return [
         {
             //id: '2',
             title: 'match 2',
-            playersRegistered: 2,
             matchSize: 10,
+            playerRegistered: 1,
             location: 'linkelStr.11 04159 Leipzig',
             date : new Date()
 
@@ -42,8 +60,8 @@ return [
         {
             //id: '3',
             title: 'match 3',
-            playersRegistered: 4,
             matchSize: 10,
+            playerRegistered: 1,
             location: 'linkelStr.11 04159 Leipzig',
             date : new Date()
 
@@ -51,8 +69,8 @@ return [
         {
             //id: '4',
             title: 'match 4',
-            playersRegistered: 6,
             matchSize: 22,
+            playerRegistered: 1,
             location: 'linkelStr.11 04159 Leipzig',
             date : new Date()
 

@@ -36,7 +36,10 @@ function MatchList() {
 			</div>
 			<ul className="matches-list">
 				{matches.map((match: Match) => (
-					<Link to={match.id.toString()}>
+					<Link
+						to={match.id.toString()}
+						key={match.id}
+					>
 						<li key={match.id}>
 							<div>{match.title}</div>
 							<div>

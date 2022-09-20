@@ -60,7 +60,7 @@ export const action: ActionFunction = async ({ request }) => {
 	return createUserSession(user.id);
 
 	// if there's no user, return the fields and a formError
-	// if there is a user, create their session and redirect to /jokes
+	// if there is a user, create their session and redirectTo
 };
 
 export default function Login() {
