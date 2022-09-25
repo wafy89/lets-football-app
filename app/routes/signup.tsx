@@ -50,23 +50,19 @@ export const action: ActionFunction = async ({ request }) => {
 		username: validateUsername(username),
 		password: validatePassword(password),
 	};
-	console.log({ fieldErrors });
 	if (Object.values(fieldErrors).some(Boolean))
 		return badRequest({ fieldErrors, fields });
 
 	const userExists = await db.user.findFirst({
 		where: { username },
 	});
-	console.log({ userExists });
 	if (userExists?.id) {
 		return badRequest({
 			fields,
 			formError: `User with username ${username} already exists`,
 		});
 	}
-	console.log('zamatna');
 	const user = await register(fields);
-	console.log({ user });
 	if (!user) {
 		return badRequest({
 			fields,

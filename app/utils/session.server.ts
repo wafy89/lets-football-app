@@ -80,7 +80,6 @@ const storage = createCookieSessionStorage({
 export async function getUserId(request: Request) {
     const session = await getUserSession(request);
     const userId = session.get("userId");
-    console.log('getUserId',{userId})
 
     if (!userId || typeof userId !== "string") return null;
     return userId;
@@ -94,12 +93,10 @@ export async function requireUserId(
 
     const session = await getUserSession(request);
     const userId = await session.get("userId");
-    console.log('requireUserId',{userId})
     if (!userId || typeof userId !== "string") {
       const searchParams = new URLSearchParams([
         ["redirectTo", redirectTo],
       ]);
-      console.log(searchParams)
       throw redirect(`/login?${searchParams}`);
     }
     return userId;
@@ -139,12 +136,6 @@ export async function getUser(request: Request) {
     name,
     position
   }: RegisterForm) {
-    console.log(
-        "bla bla",
-        username,
-        password,
-        name,
-        position)
     const passwordHash = await bcrypt.hash(password, 10);
     const user = await db.user.create({
       data: { username, passwordHash, name, position },

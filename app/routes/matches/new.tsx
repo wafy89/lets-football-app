@@ -14,15 +14,14 @@ type Match = {
 
 export const action = async ({ request }: { request: Request }) => {
 	const userId = await requireUserId(request);
-	console.log({ userId });
 	if (!userId) return redirect('/login');
 
 	const formData = await request.formData();
 	let formDate = formData.get('date');
-	console.log('date type', typeof formDate);
 	if (typeof formDate === 'string' && formDate) {
 		formDate = new Date(formDate);
 	}
+
 	const match: Match = {
 		creatorUserId: userId,
 		title: formData.get('title') as string,
@@ -31,14 +30,13 @@ export const action = async ({ request }: { request: Request }) => {
 		location: formData.get('location') as string,
 		date: new Date(formDate),
 	};
-	if (!Object.values(match).every(Boolean)) {
-		throw new Error('there was a Problem creating a match');
-	}
+	if (typeof match.title)
+		if (!Object.values(match).every(Boolean)) {
+			throw new Error('there was a Problem creating a match');
+		}
 	//  sbmiut to db
 
 	const newMatch = await db.match.create({ data: match });
-	console.log({ userId });
-	console.log('matchId:', newMatch.id);
 	await db.userMatch.create({
 		data: {
 			userId,

@@ -1,4 +1,4 @@
-import { LoaderFunction, redirect } from '@remix-run/node';
+import { LoaderFunction } from '@remix-run/node';
 import {
 	Outlet,
 	LiveReload,
@@ -28,7 +28,6 @@ type ParentComponentProps = {
 
 export const loader: LoaderFunction = async ({ request }) => {
 	const user = await getUser(request);
-	console.log('layout loader', { user });
 
 	return {
 		user,
@@ -67,7 +66,7 @@ function Document({ children, title = 'Lets Football' }: ParentComponentProps) {
 
 function Layout({ children }: ParentComponentProps) {
 	const loaderData = useLoaderData();
-	const { user } = loaderData;
+	const user = loaderData?.user || { name: ' ' };
 
 	return (
 		<>

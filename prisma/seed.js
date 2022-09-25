@@ -4,10 +4,10 @@ const db = new PrismaClient()
 
 async function seed(){
 
-    //clear database
-    await db.match.deleteMany()
-    await db.user.deleteMany()
-    await db.userMatch.deleteMany()
+    //clear database    
+     await db.userMatch.deleteMany()
+     await db.match.deleteMany()
+     await db.user.deleteMany()
 
 
     // create user data
@@ -17,7 +17,7 @@ async function seed(){
             // this is a hashed version of "admin"
             passwordHash:"$2a$10$i9N65NaDXOM3Q9C8MwfI7u89czPGCeuSk.WQQWspCJMIzefNDcKH6",
             name: 'admin',
-            position: "cm"
+            position: "midfielder"
         },
       });
 

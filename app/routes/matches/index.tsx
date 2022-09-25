@@ -13,7 +13,6 @@ type Match = {
 export const loader = async () => {
 	const data = {
 		matches: await db.match.findMany({
-			take: 10,
 			orderBy: { date: 'desc' },
 		}),
 	};
@@ -31,7 +30,7 @@ function MatchList() {
 					to="/matches/new"
 					className="btn"
 				>
-					New Match
+					Create Match
 				</Link>
 			</div>
 			<ul className="matches-list">
@@ -43,7 +42,7 @@ function MatchList() {
 						<li key={match.id}>
 							<div>{match.title}</div>
 							<div>
-								Available Places: {match.matchSize - match.playersRegistered}/
+								Available Places: {match.matchSize - match.playerRegistered}/
 								{match.matchSize}
 							</div>
 							<address className="match-location">{match.location}</address>
