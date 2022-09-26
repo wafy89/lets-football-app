@@ -1,4 +1,4 @@
-import { LinksFunction, LoaderFunction } from '@remix-run/node';
+import { LoaderFunction } from '@remix-run/node';
 import {
 	Outlet,
 	LiveReload,
@@ -7,7 +7,6 @@ import {
 	Meta,
 	useLoaderData,
 } from '@remix-run/react';
-import globalStylesUrl from '~/styles/global.css';
 import { getUser } from '~/utils/session.server';
 
 import styles from './styles/app.css';
@@ -73,41 +72,42 @@ function Layout({ children }: ParentComponentProps) {
 
 	return (
 		<>
-			<nav className="navbar">
-				<Link
-					to="/"
-					className="logo"
-				>
-					Lets F⚽⚽tball
-				</Link>
+			<div className="mx-auto  px-2 text-red-50 sm:px-6 lg:px-8  bg-gray-800">
+				<div className="relative flex h-16 items-center justify-between">
+					<Link
+						to="/"
+						className="logo"
+					>
+						Lets F⚽⚽tball
+					</Link>
 
-				<ul className="nav">
-					<li>
-						<Link to="/matches">matches</Link>
-					</li>
+					<ul className="relative flex h-16 items-center justify-between  gap-1">
+						<li className="p-1">
+							<Link to="/matches">matches</Link>
+						</li>
 
-					{user ? (
-						<li>
-							<form
-								action="/logout"
-								method="POST"
-							>
-								<button
-									type="submit"
-									className="btn"
+						{user ? (
+							<li className="p-1">
+								<form
+									action="/logout"
+									method="POST"
 								>
-									Logout {user.name}
-								</button>
-							</form>
-						</li>
-					) : (
-						<li>
-							<Link to="/login">Login</Link>
-						</li>
-					)}
-				</ul>
-			</nav>
-
+									<button
+										type="submit"
+										className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+									>
+										Logout {user.name}
+									</button>
+								</form>
+							</li>
+						) : (
+							<li className="p-1">
+								<Link to="/login">Login</Link>
+							</li>
+						)}
+					</ul>
+				</div>
+			</div>
 			<div className="container">{children}</div>
 		</>
 	);
