@@ -1,4 +1,4 @@
-import { LoaderFunction } from '@remix-run/node';
+import { LinksFunction, LoaderFunction } from '@remix-run/node';
 import {
 	Outlet,
 	LiveReload,
@@ -10,8 +10,11 @@ import {
 import globalStylesUrl from '~/styles/global.css';
 import { getUser } from '~/utils/session.server';
 
-export const links = () => [{ rel: 'stylesheet', href: globalStylesUrl }];
+import styles from './styles/app.css';
 
+export function links() {
+	return [{ rel: 'stylesheet', href: styles }];
+}
 export const meta = () => {
 	const description = 'App helps you to meet football mates';
 	const keywords = 'football, meet, play, find people';
