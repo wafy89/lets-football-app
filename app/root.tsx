@@ -108,7 +108,7 @@ function Layout({ children }: ParentComponentProps) {
 					</ul>
 				</div>
 			</div>
-			<div className="container">{children}</div>
+			<div className="container w-full mx-auto justify-center">{children}</div>
 		</>
 	);
 }
