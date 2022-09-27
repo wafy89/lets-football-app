@@ -1,19 +1,19 @@
+import { Match, UserMatch } from '@prisma/client';
 import { useLoaderData, Link } from '@remix-run/react';
 
 import { db } from '~/utils/db.server';
-
-type Match = {
-	id: number;
-	title: string;
-	playerRegistered: number;
-	matchSize: number;
-	location: string;
-};
 
 export const loader = async () => {
 	const data = {
 		matches: await db.match.findMany({
 			orderBy: { date: 'desc' },
+			include: {
+				userMatch: {
+					include: {
+						user: true,
+					},
+				},
+			},
 		}),
 	};
 	return data;
@@ -52,10 +52,10 @@ function MatchList() {
 						</h5>
 						<p className="mb-3 font-normal text-gray-700 ">
 							{' '}
-							Available Places: {match.matchSize - match.playerRegistered}/
+							Available Places: {match.matchSize - match.userMatch.length}/
 							{match.matchSize}
 						</p>
-						<address className="mb-3 font-normal text-sm text-gray-300 ">
+						<address className="mb-6 font-normal text-sm text-gray-300 ">
 							{match.location}
 						</address>
 						<Link to={match.id.toString()}>
