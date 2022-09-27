@@ -1,6 +1,7 @@
-import { ActionFunction, redirect, Request } from '@remix-run/node';
+import { ActionFunction, redirect } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { db } from '~/utils/db.server';
+import { User } from '@prisma/client';
 import { getUser, getUserId } from '~/utils/session.server';
 import matchStylesUrl from '~/styles/match.css';
 export const links = () => [{ rel: 'stylesheet', href: matchStylesUrl }];
@@ -77,7 +78,7 @@ export default function MatchDetails() {
 
 	return (
 		<>
-			<div className="overflow-hidden bg-white shadow sm:rounded-lg">
+			<div className="overflow-hidden bg-white shadow sm:rounded-t-lg mt-4">
 				<div className="px-4 py-5 sm:px-6 flex justify-between align-middle">
 					<h1 className="my-auto"> Match Details : {match.title}</h1>
 					<div className="flex justify-end gap-2 align-middle">
@@ -162,13 +163,14 @@ export default function MatchDetails() {
 						<dt className="text-sm font-medium text-gray-500">
 							Players joining:
 						</dt>
-						{match.userMatch.map(
-							(player: { user: { name: string; id: string } }) => (
-								<dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-									<Link to={`/user/${player.user.id}`}>{player.user.name}</Link>
-								</dd>
-							)
-						)}
+						<br />
+						{match.userMatch.map((player: { user: User }) => (
+							<dd className="ml-4 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+								<Link to={`/user/${player.user.id}`}>
+									{player.user.name} - {player.user.position}
+								</Link>
+							</dd>
+						))}
 					</div>
 				</dl>
 			</div>
