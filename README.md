@@ -3,30 +3,20 @@
 - [Remix Docs](https://remix.run/docs)
 - [Netlify Functions](https://www.netlify.com/products/functions/)
 
-## Netlify Setup
+## Fly Setup
 
-1. Install the [Netlify CLI](https://www.netlify.com/products/dev/):
+1. [Install `flyctl`](https://fly.io/docs/getting-started/installing-flyctl/)
+
+2. Sign up and log in to Fly
 
 ```sh
-npm i -g netlify-cli
+flyctl auth signup
 ```
 
-If you have previously installed the Netlify CLI, you should update it to the latest version:
+3. Setup Fly. It might ask if you want to deploy, say no since you haven't built the app yet.
 
 ```sh
-npm i -g netlify-cli@latest
-```
-
-2. Sign up and log in to Netlify:
-
-```sh
-netlify login
-```
-
-3. Create a new site:
-
-```sh
-netlify init
+flyctl launch
 ```
 
 ## Development
