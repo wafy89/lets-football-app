@@ -9,10 +9,12 @@
 		"build:css": "tailwindcss -m -i ./styles/app.css -o app/styles/app.css",
 		"dev": "concurrently \"npm run dev:css\" \"remix dev\"",
 		"dev:css": "tailwindcss -w -i ./styles/app.css -o app/styles/app.css",
-		"start": "cross-env NODE_ENV=production dev"
+		"start": "cross-env NODE_ENV=production netlify dev"
 	},
 	"dependencies": {
+		"@netlify/functions": "^1.0.0",
 		"@prisma/client": "^4.3.1",
+		"@remix-run/netlify": "^1.7.0",
 		"@remix-run/node": "^1.7.0",
 		"@remix-run/react": "^1.7.0",
 		"bcryptjs": "^2.4.3",
