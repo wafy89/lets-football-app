@@ -1,0 +1,7 @@
+.page-content{
+    max-width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: flex-start;
+}
