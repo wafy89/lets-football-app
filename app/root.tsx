@@ -58,7 +58,7 @@ function Document({ children, title = 'Lets Football' }: ParentComponentProps) {
 				<Links />
 				<title>{title}</title>
 			</head>
-			<body>
+			<body className="overflow-y-hidden">
 				{children}
 				{process.env.NODE_ENV === 'development' ? <LiveReload /> : null}
 			</body>
@@ -72,7 +72,7 @@ function Layout({ children }: ParentComponentProps) {
 
 	return (
 		<>
-			<div className="mx-auto  px-2 text-red-50 sm:px-6 lg:px-8  bg-gray-800">
+			<div className="mx-auto  px-2 text-red-50 sm:px-6 lg:px-8  bg-gray-800 ">
 				<div className="relative flex h-16 items-center justify-between">
 					<Link
 						to="/"
@@ -86,7 +86,7 @@ function Layout({ children }: ParentComponentProps) {
 							<Link to="/matches">matches</Link>
 						</li>
 
-						{user ? (
+						{user.id ? (
 							<li className="p-1">
 								<form
 									action="/logout"
