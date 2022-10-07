@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
+ @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
 
 * {
   box-sizing: border-box;
@@ -6,9 +6,6 @@
   padding: 0;
 }
 
-body {
-  font-family: 'Poppins', sans-serif;
-}
 
 a {
   text-decoration: none;
@@ -19,12 +16,8 @@ ul {
   list-style: none;
 }
 
-p {
-  margin: 10px 0;
-}
 
 .container {
-  width: 100%;
   max-width: 960px;
   margin: auto;
   padding: 0 30px;
@@ -232,4 +225,4 @@ p {
 .auth-container fieldset label {
   margin-right: 10px;
 }
-
+ */

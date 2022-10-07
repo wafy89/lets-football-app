@@ -1,6 +1,7 @@
-import { ActionFunction, redirect, Request } from '@remix-run/node';
+import { ActionFunction, redirect } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { db } from '~/utils/db.server';
+import { User } from '@prisma/client';
 import { getUser, getUserId } from '~/utils/session.server';
 import matchStylesUrl from '~/styles/match.css';
 export const links = () => [{ rel: 'stylesheet', href: matchStylesUrl }];
@@ -77,53 +78,102 @@ export default function MatchDetails() {
 
 	return (
 		<>
-			<div className="page-header">
-				<h1> Match Details : {match.title}</h1>
-				<Link
-					to="/matches"
-					className="btn btn-reverse"
-				>
-					Back
-				</Link>
-				<form method="post">
-					{isUserInMatch() ? (
-						<button
-							className="btn btn-delete"
-							name="_action"
-							value="leave"
+			<div className="overflow-hidden bg-white shadow sm:rounded-t-lg mt-4">
+				<div className="px-4 py-5 sm:px-6 flex justify-between align-middle">
+					<h1 className="my-auto"> Match Details : {match.title}</h1>
+					<div className="flex justify-end gap-2 align-middle">
+						<Link
+							to="/matches"
+							className="flex-col justify-center"
 						>
-							Leave
-						</button>
-					) : (
-						<button
-							className="btn "
-							type="submit"
-							name="_action"
-							value="join"
-						>
-							Join
-						</button>
-					)}
-				</form>
+							<button
+								className="group relative flex w-full justify-center rounded-md border border-transparent bg-gray-600 py-2 px-4 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:bg-gray-500 focus:ring-offset-2"
+								name="_action"
+								value="leave"
+							>
+								back
+							</button>
+						</Link>
+						<form method="post">
+							{isUserInMatch() ? (
+								<button
+									className="group relative flex w-full justify-center rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:bg-red-500 focus:ring-offset-2"
+									name="_action"
+									value="leave"
+								>
+									Leave
+								</button>
+							) : (
+								<button
+									className="group relative flex w-full justify-center rounded-md border border-transparent bg-green-400 py-2 px-4 text-sm font-medium text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:bg-green-800 focus:ring-offset-2"
+									type="submit"
+									name="_action"
+									value="join"
+								>
+									Join
+								</button>
+							)}
+						</form>
+					</div>
+				</div>
 			</div>
-			<ul className="page-content">
-				<li>available Places : {getAvailablePlaces()}</li>
-				<li>match size : {match.matchSize}</li>
-				<li>Players registered : {match.playerRegistered}</li>
-				<li>Location : {match.location}</li>
-				<li>Date : {new Date(match.date).toLocaleString()}</li>
-				<Link to={`/user/${creator.id}`}>
-					<li>Creator : {creator.name}</li>
-				</Link>
-				<li>
-					Players joining:
-					<ol>
-						{match.userMatch.map((player) => (
-							<li>{player.user.name}</li>
+			<div className="border-t border-gray-200">
+				<dl>
+					<div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+						<dt className="text-sm font-medium text-gray-500">
+							available Places :
+						</dt>
+						<dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+							{getAvailablePlaces()}
+						</dd>
+					</div>
+					<div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+						<dt className="text-sm font-medium text-gray-500">match size :</dt>
+						<dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+							{match.matchSize}
+						</dd>
+					</div>
+					<div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+						<dt className="text-sm font-medium text-gray-500">
+							Players registered :
+						</dt>
+						<dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+							{match.playerRegistered}
+						</dd>
+					</div>
+					<div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+						<dt className="text-sm font-medium text-gray-500">Location :</dt>
+						<dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+							{match.location}
+						</dd>
+					</div>
+					<div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+						<dt className="text-sm font-medium text-gray-500">Date :</dt>
+						<dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+							{new Date(match.date).toLocaleString()}
+						</dd>
+					</div>
+					<div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+						<dt className="text-sm font-medium text-gray-500">Creator :</dt>
+						<dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+							<Link to={`/user/${creator.id}`}>{creator.name}</Link>
+						</dd>
+					</div>
+					<div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+						<dt className="text-sm font-medium text-gray-500">
+							Players joining:
+						</dt>
+						<br />
+						{match.userMatch.map((player: { user: User }) => (
+							<dd className="ml-4 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+								<Link to={`/user/${player.user.id}`}>
+									{player.user.name} - {player.user.position}
+								</Link>
+							</dd>
 						))}
-					</ol>
-				</li>
-			</ul>
+					</div>
+				</dl>
+			</div>
 		</>
 	);
 }
