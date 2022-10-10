@@ -22,6 +22,7 @@ export async function loader({ params, request }: any) {
 	const creator = await db.user.findFirst({
 		where: { id: match?.creatorUserId },
 	});
+
 	if (!match) throw new Error('match not found');
 
 	return {
@@ -39,8 +40,20 @@ export const action: ActionFunction = async ({ request, params }) => {
 	const userId = (await getUserId(request)) || undefined;
 
 	if (!userId) throw redirect('/login');
-	if (!matchId) return;
 
+	if (!matchId) return;
+	const match = await db.match.findFirst({
+		where: {
+			id: matchId,
+		},
+		include: {
+			userMatch: {
+				include: {
+					user: true,
+				},
+			},
+		},
+	});
 	// handle action
 	switch (actionType) {
 		case 'join':
@@ -51,6 +64,19 @@ export const action: ActionFunction = async ({ request, params }) => {
 				},
 			});
 			return null;
+		case 'delete':
+			await db.userMatch.deleteMany({
+				where: {
+					matchId,
+				},
+			});
+			await db.match.delete({
+				where: {
+					id: matchId,
+				},
+			});
+
+			return redirect('/matches');
 		case 'leave':
 			await db.userMatch.delete({
 				where: {
@@ -60,6 +86,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 					},
 				},
 			});
+
 			return redirect('/matches');
 		default:
 			throw new Error('somthing went wrong with join/leave action');
@@ -73,8 +100,9 @@ export default function MatchDetails() {
 		usersInMatch.some(
 			(user: { userId: string }) => user?.userId && user.userId === userId
 		);
+	const isMatchCreator = () => userId === match.creatorUserId;
 
-	const getAvailablePlaces = () => match.matchSize - match.playerRegistered;
+	const getAvailablePlaces = () => match.matchSize - match.userMatch.length;
 
 	return (
 		<>
@@ -95,7 +123,15 @@ export default function MatchDetails() {
 							</button>
 						</Link>
 						<form method="post">
-							{isUserInMatch() ? (
+							{isMatchCreator() ? (
+								<button
+									className="group relative flex w-full justify-center rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:bg-red-500 focus:ring-offset-2"
+									name="_action"
+									value="delete"
+								>
+									Delete
+								</button>
+							) : isUserInMatch() ? (
 								<button
 									className="group relative flex w-full justify-center rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:bg-red-500 focus:ring-offset-2"
 									name="_action"
